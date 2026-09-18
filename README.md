@@ -1,49 +1,49 @@
 # Agentic RAG Codon Optimization Platform
 
-A production-oriented research prototype for evidence-grounded, brain-region- and cell-type-aware gene-therapy CDS design.
+뇌 영역·세포 유형별 근거를 활용해 유전자치료용 CDS 설계를 지원하는 프로덕션 지향 연구 프로토타입입니다.
 
-## 3-Minute Project Summary
+## 3분 프로젝트 요약
 
-### Problem
+### 해결하려는 문제
 
-Gene-therapy CDS design combines heterogeneous biological references, constrained sequence optimization, and quality-control evidence. The practical challenge is not only generating a candidate sequence, but also making every retrieved source, optimization decision, and exported result traceable and reproducible.
+유전자치료용 CDS 설계에는 서로 다른 생물학 문헌과 데이터, 제약조건을 고려한 서열 최적화, 품질 검증이 함께 필요합니다. 단순히 후보 서열을 생성하는 데 그치지 않고, 검색한 근거와 최적화 과정, 산출 결과를 추적하고 동일한 조건에서 재현할 수 있도록 만드는 것이 핵심 문제였습니다.
 
-### Approach
+### 접근 방식
 
-This repository connects four layers in one auditable workflow:
+본 저장소는 다음 네 계층을 하나의 감사 가능한 워크플로로 연결합니다.
 
-1. **Evidence ingestion and retrieval** — PDF, Markdown, text, JSON, GTEx, Allen, and custom priors are normalized and searched with hybrid retrieval, alias expansion, facet-aware reranking, and source-priority scoring.
-2. **Agentic orchestration** — planner, retriever, optimizer, and QC-writer roles preserve the workflow trace instead of returning an opaque one-shot answer.
-3. **Constrained optimization** — a seeded NSGA-II optimizer explores synonymous CDS candidates while evaluating GC/CpG, motifs, splice/polyA signals, restriction sites, codon-pair, 5-prime GC, hairpin, and complexity constraints.
-4. **Verification and provenance** — golden tests, API-contract checks, UI/API smoke tests, signed artifact bundles, provenance hashes, and preflight evidence make the result reviewable and reproducible.
+1. **근거 수집·검색** — PDF, Markdown, TXT, JSON 문서와 GTEx·Allen·사용자 정의 데이터를 정규화하고, hybrid retrieval, alias expansion, facet-aware reranking, source-priority scoring으로 필요한 근거를 검색합니다.
+2. **에이전트 오케스트레이션** — planner, retriever, optimizer, QC writer 역할을 분리하고 실행 이력을 보존해, 결과만 반환하는 불투명한 단일 호출을 피했습니다.
+3. **제약 기반 최적화** — seed가 고정된 NSGA-II로 동의 코돈 CDS 후보를 탐색하며 GC/CpG, motif, splice·polyA signal, restriction site, codon pair, 5-prime GC, hairpin, complexity 제약을 평가합니다.
+4. **검증·출처 추적** — golden test, API contract, UI/API smoke test, 서명된 산출물 bundle, provenance hash, preflight evidence를 통해 결과를 검토하고 재현할 수 있도록 구성했습니다.
 
-### System Flow
+### 시스템 흐름
 
 ```mermaid
 flowchart LR
-    A[Documents and structured priors] --> B[Ingestion and normalization]
-    B --> C[Hybrid retrieval and reranking]
+    A[문서·구조화 데이터] --> B[수집·정규화]
+    B --> C[Hybrid retrieval·reranking]
     C --> D[Agentic workflow]
-    D --> E[Seeded NSGA-II optimization]
-    E --> F[QC and candidate comparison]
-    F --> G[Reports and manifested ZIP bundles]
-    G --> H[Archive, hashes, audit, and CI verification]
+    D --> E[Seeded NSGA-II 최적화]
+    E --> F[QC·후보 비교]
+    F --> G[보고서·manifested ZIP bundle]
+    G --> H[보관·hash·audit·CI 검증]
 ```
 
-### What to Review
+### 주요 검토 항목
 
-| Review point | Repository evidence |
+| 검토 항목 | 저장소에서 확인할 수 있는 근거 |
 | --- | --- |
-| Problem-solving scope | Evidence-grounded CDS design, retrieval, optimization, QC, and audit in one workflow |
-| Backend and UI | FastAPI API and Next.js dashboard |
-| Reproducibility | Seeded optimization, canonical configuration hashes, lockfiles, snapshots, and manifests |
-| Quality validation | API contract, response/value golden tests, backend regression, frontend build, and browser smoke tests |
-| Production readiness | Docker Compose, Postgres adapter, auth/rate-limit settings, readiness gates, operational audit, and deployment runbook |
-| Deliverables | Markdown, HTML, JSON, and PDF reports plus hash-verified ZIP evidence bundles |
+| 문제 해결 범위 | 근거 기반 CDS 설계부터 검색·최적화·QC·감사까지 하나의 워크플로로 구현 |
+| 백엔드·UI | FastAPI API와 Next.js dashboard |
+| 재현성 | seed 고정 최적화, canonical configuration hash, lockfile, snapshot, manifest |
+| 품질 검증 | API contract, response/value golden test, backend regression, frontend build, browser smoke test |
+| 운영 준비도 | Docker Compose, Postgres adapter, 인증·rate limit, readiness gate, operational audit, deployment runbook |
+| 산출물 | Markdown·HTML·JSON·PDF 보고서와 hash 검증 가능한 ZIP evidence bundle |
 
-### Quick Verification
+### 빠른 검증 방법
 
-Run the complete evidence chain from the repository root:
+저장소 루트에서 다음 명령으로 전체 검증 체인을 실행할 수 있습니다.
 
 ```powershell
 python scripts/preflight.py
@@ -52,22 +52,22 @@ python scripts/final_portfolio_check.py --workflow .github/workflows/ci.yml --ou
 python scripts/verify_final_portfolio_check.py --path backend/app/data/runtime/final_portfolio_check.json
 ```
 
-The CI workflow also compiles the backend, checks the OpenAPI contract, runs golden and regression tests, builds the frontend, exercises the browser path, validates signed artifacts, and checks the Docker Compose/Postgres deployment shape.
+CI는 backend compile, OpenAPI contract, golden·regression test, frontend build, browser UI 경로, 서명된 산출물, Docker Compose/Postgres 배포 구성을 함께 검증합니다.
 
-### Technology
+### 기술 스택
 
 - **Backend:** Python, FastAPI, Pydantic, SQLite/Postgres
 - **Frontend:** Next.js, React, TypeScript, Playwright
-- **Retrieval:** local JSON, optional pgvector/Qdrant, hash or OpenAI embeddings
-- **Operations:** Docker Compose, GitHub Actions, SHA-256 manifests, optional HMAC signing
+- **Retrieval:** local JSON, 선택형 pgvector/Qdrant, hash 또는 OpenAI embedding
+- **Operations:** Docker Compose, GitHub Actions, SHA-256 manifest, 선택형 HMAC signing
 
-### Known Limitations
+### 한계와 향후 보완점
 
-- Seed tRNA/codon-availability priors include explicit low-confidence or placeholder caveats and must not be treated as release-pinned quantitative data.
-- Retrieval quality depends on the coverage and freshness of ingested documents and structured reference snapshots.
-- Production use requires validated source-data refreshes, deployment secrets, and passing readiness/audit gates.
+- seed tRNA/codon-availability prior에는 신뢰도가 낮거나 placeholder인 값이 명시되어 있으며, release에 고정된 정량 데이터로 해석해서는 안 됩니다.
+- 검색 품질은 수집 문서와 구조화 reference snapshot의 범위·최신성에 영향을 받습니다.
+- 프로덕션 적용 전에는 검증된 source-data refresh, 배포 secret 설정, readiness·audit gate 통과가 필요합니다.
 
-## Detailed Capabilities
+## 상세 기능
 
 - FastAPI backend for scoring, gene-to-CDS resolution, optimization, evidence retrieval, and QC report export.
 - Next.js dashboard for target entry, candidate comparison, evidence review, QC summary, data provenance, source-snapshot coverage, and operational readiness.

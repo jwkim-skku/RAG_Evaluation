@@ -1,8 +1,73 @@
 # Agentic RAG Codon Optimization Platform
 
-This repository implements a production-oriented prototype of the PDF proposal for brain-region and cell-type-aware gene therapy CDS design.
+A production-oriented research prototype for evidence-grounded, brain-region- and cell-type-aware gene-therapy CDS design.
 
-## Current Capability
+## 3-Minute Project Summary
+
+### Problem
+
+Gene-therapy CDS design combines heterogeneous biological references, constrained sequence optimization, and quality-control evidence. The practical challenge is not only generating a candidate sequence, but also making every retrieved source, optimization decision, and exported result traceable and reproducible.
+
+### Approach
+
+This repository connects four layers in one auditable workflow:
+
+1. **Evidence ingestion and retrieval** — PDF, Markdown, text, JSON, GTEx, Allen, and custom priors are normalized and searched with hybrid retrieval, alias expansion, facet-aware reranking, and source-priority scoring.
+2. **Agentic orchestration** — planner, retriever, optimizer, and QC-writer roles preserve the workflow trace instead of returning an opaque one-shot answer.
+3. **Constrained optimization** — a seeded NSGA-II optimizer explores synonymous CDS candidates while evaluating GC/CpG, motifs, splice/polyA signals, restriction sites, codon-pair, 5-prime GC, hairpin, and complexity constraints.
+4. **Verification and provenance** — golden tests, API-contract checks, UI/API smoke tests, signed artifact bundles, provenance hashes, and preflight evidence make the result reviewable and reproducible.
+
+### System Flow
+
+```mermaid
+flowchart LR
+    A[Documents and structured priors] --> B[Ingestion and normalization]
+    B --> C[Hybrid retrieval and reranking]
+    C --> D[Agentic workflow]
+    D --> E[Seeded NSGA-II optimization]
+    E --> F[QC and candidate comparison]
+    F --> G[Reports and manifested ZIP bundles]
+    G --> H[Archive, hashes, audit, and CI verification]
+```
+
+### What to Review
+
+| Review point | Repository evidence |
+| --- | --- |
+| Problem-solving scope | Evidence-grounded CDS design, retrieval, optimization, QC, and audit in one workflow |
+| Backend and UI | FastAPI API and Next.js dashboard |
+| Reproducibility | Seeded optimization, canonical configuration hashes, lockfiles, snapshots, and manifests |
+| Quality validation | API contract, response/value golden tests, backend regression, frontend build, and browser smoke tests |
+| Production readiness | Docker Compose, Postgres adapter, auth/rate-limit settings, readiness gates, operational audit, and deployment runbook |
+| Deliverables | Markdown, HTML, JSON, and PDF reports plus hash-verified ZIP evidence bundles |
+
+### Quick Verification
+
+Run the complete evidence chain from the repository root:
+
+```powershell
+python scripts/preflight.py
+python scripts/portfolio_readiness_matrix.py --strict
+python scripts/final_portfolio_check.py --workflow .github/workflows/ci.yml --output-dir backend/app/data/runtime --output-json backend/app/data/runtime/final_portfolio_check.json
+python scripts/verify_final_portfolio_check.py --path backend/app/data/runtime/final_portfolio_check.json
+```
+
+The CI workflow also compiles the backend, checks the OpenAPI contract, runs golden and regression tests, builds the frontend, exercises the browser path, validates signed artifacts, and checks the Docker Compose/Postgres deployment shape.
+
+### Technology
+
+- **Backend:** Python, FastAPI, Pydantic, SQLite/Postgres
+- **Frontend:** Next.js, React, TypeScript, Playwright
+- **Retrieval:** local JSON, optional pgvector/Qdrant, hash or OpenAI embeddings
+- **Operations:** Docker Compose, GitHub Actions, SHA-256 manifests, optional HMAC signing
+
+### Known Limitations
+
+- Seed tRNA/codon-availability priors include explicit low-confidence or placeholder caveats and must not be treated as release-pinned quantitative data.
+- Retrieval quality depends on the coverage and freshness of ingested documents and structured reference snapshots.
+- Production use requires validated source-data refreshes, deployment secrets, and passing readiness/audit gates.
+
+## Detailed Capabilities
 
 - FastAPI backend for scoring, gene-to-CDS resolution, optimization, evidence retrieval, and QC report export.
 - Next.js dashboard for target entry, candidate comparison, evidence review, QC summary, data provenance, source-snapshot coverage, and operational readiness.

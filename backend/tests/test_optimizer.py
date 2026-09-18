@@ -2438,6 +2438,7 @@ def test_production_promotion_runbook_groups_gap_evidence(tmp_path: Path) -> Non
     tampered["gap_count"] = 2
     assert module.verify_gap_summary(tampered)["status"] == "fail"
     static_runbook = module.build_runbook({"audit_hash": valid_hash, "summary": {"production_ready": False}})
+    assert static_runbook["status"] == "warning"
     assert static_runbook["verification"]["status"] == "warning"
     assert "live production audit" in static_runbook["verification"]["warnings"][0]
 

@@ -104,7 +104,13 @@ def validate_preflight_evidence_linkage(payload: dict[str, Any], *, evidence_pat
     checks = evidence.get("checks") if isinstance(evidence.get("checks"), list) else []
     if payload.get("preflight_failure_count") != len(stringify_list(evidence.get("failed"))):
         errors.append("preflight_failure_count does not match preflight_evidence failed[]")
-    warning_count = sum(1 for check in checks if isinstance(check, dict) and (check.get("warnings") or check.get("status") == "warning"))
+    warning_count = sum(
+        1
+        for check in checks
+        if isinstance(check, dict) and (check.get("warnings") or check.get("status") == "warning")
+    )
+    if stringify_list(evidence.get("skipped")):
+        warning_count += 1
     if payload.get("preflight_warning_count") != warning_count:
         errors.append("preflight_warning_count does not match preflight_evidence checks")
     if payload.get("preflight_checks_hash") != evidence.get("checks_hash"):

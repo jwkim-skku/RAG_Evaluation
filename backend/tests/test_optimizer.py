@@ -1571,6 +1571,7 @@ def test_cli_production_audit_write_result_verifier_recomputes_artifact_hashes()
         preflight_evidence = {
             "status": "pass",
             "failed": [],
+            "skipped": ["frontend_build"],
             "checks": [
                 {
                     "name": "production_audit_template",
@@ -1596,7 +1597,7 @@ def test_cli_production_audit_write_result_verifier_recomputes_artifact_hashes()
             "preflight_evidence": str(preflight_path),
             "preflight_status": "pass",
             "preflight_failure_count": 0,
-            "preflight_warning_count": 0,
+            "preflight_warning_count": 1,
             "preflight_hash": preflight_evidence["preflight_hash"],
             "preflight_checks_hash": preflight_evidence["checks_hash"],
         }

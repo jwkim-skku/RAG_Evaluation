@@ -84,7 +84,7 @@ def build_runbook(audit: dict[str, Any]) -> dict[str, Any]:
         "runbook_schema": RUNBOOK_SCHEMA,
         "source_audit_hash": audit.get("audit_hash"),
         "source_generated_at": audit.get("generated_at"),
-        "status": gap_summary.get("status") or "unknown",
+        "status": gap_summary.get("status") or verification.get("status") or "warning",
         "production_ready": ((audit.get("summary") or {}).get("production_ready") is True),
         "gap_count": len(gaps),
         "blocking_count": safe_int(gap_summary.get("blocking_count")),
